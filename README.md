@@ -1,15 +1,35 @@
 # rabbit-rpc
-simple rpc using [RabbitMQ](https://www.rabbitmq.com/) and [amqp.node](https://github.com/squaremo/amqp.node)
+Bluebird-based promise [RabbitMQ](https://www.rabbitmq.com/) RPC using [amqp.node](https://github.com/squaremo/amqp.node)
 
 ## Install
 ```sh
-> npm install rabbit-rpc
+> npm install promise-rabbit-rpc
 ```
 
 ## example
+
+## Promises
+```js
+let rpc = require('promise-rabbit-rpc')('amqp://localhost');
+rpc.promise('square', 99)
+    .then( res => console.log('The square of 99 is', res) )
+    .catch( reason => console.error(reason) )
+
+```
+
+### handler.js
+```js
+let rpc = require('promise-rabbit-rpc')('amqp://localhost');
+
+rpc.handle('square', function (num, callback) {
+    callback(null, num*num);
+});
+```
+
 ### caller.js
-```sh
-var rpc = require('rabbit-rpc')('amqp://localhost');
+If you don't want to use promise.
+```js
+let rpc = require('promise-rabbit-rpc')('amqp://localhost');
 
 rpc.call('square', 99, function (err, res) {
     console.log('The square of 99 is', res);
@@ -17,25 +37,9 @@ rpc.call('square', 99, function (err, res) {
 
 ```
 
-### handler.js
-```sh
-var rpc = require('rabbit-rpc')('amqp://localhost');
-
-rpc.handle('square', function (num, callback) {
-    callback(null, num*num);
-});
-```
-
-## Promises
-```sh
-rpc.promise('square', 99).then(function (res) {
-    console.log('The square of 99 is', res);
-});
-```
-
 ## Multiple arguments
 
-```sh
+```js
 rpc.call('sum', 1, 2, 3, function (err, res) {
     console.log('The sum is', res);
 });
@@ -48,7 +52,7 @@ rpc.handle('sum', function (a, b, c, callback) {
 ## Multiple types
 Send strings, numbers, arrays, objects or buffers. Arguments are serialized to [BSON](http://bsonspec.org/) using [node-buffalo](https://github.com/marcello3d/node-buffalo).
 
-```sh
+```js
 rpc.call('getFile', __dirname, 'getfile.js', function (err, stats, data) {
     if (err) {
         return console.error('Got error', err);
@@ -58,7 +62,7 @@ rpc.call('getFile', __dirname, 'getfile.js', function (err, stats, data) {
 });
 
 rpc.handle('getFile', function (dir, filename, callback) {
-    var path = dir + '/' + filename;
+    let path = dir + '/' + filename;
     fs.stat(path, function (err, stats) {
         if (err) return callback(err);
         fs.readFile(path, function (err, data) {
