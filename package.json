@@ -9,11 +9,16 @@
     "rabbitmq",
     "rpc"
   ],
+  "scripts": {
+    "test": "mocha"
+  },
   "author": "Dilame",
   "dependencies": {
     "amqplib": "^0.3.2",
     "bluebird": "3.5.0",
     "buffalo": "^0.1.3",
+    "chai": "3.5.0",
+    "mocha": "3.3.0",
     "node-uuid": "^1.4.3"
   },
   "devDependencies": {
