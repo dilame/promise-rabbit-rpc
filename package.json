@@ -1,6 +1,6 @@
 {
   "name": "promise-rabbit-rpc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Bluebird-based promise RPC using RabbitMQ",
   "repository": "https://github.com/dilame/promise-rabbit-rpc",
   "main": "index.js",
