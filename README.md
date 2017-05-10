@@ -21,8 +21,8 @@ rpc.promise('square', 99)
 ```js
 let rpc = require('promise-rabbit-rpc')('amqp://localhost');
 
-rpc.handle('square', function (num, callback) {
-    callback(null, num*num);
+rpc.handle('square', function (num) {
+    return Promise.resolve(num*num)
 });
 ```
 
