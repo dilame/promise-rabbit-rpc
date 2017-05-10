@@ -3,29 +3,37 @@ const assert = require('chai').assert;
 
 describe('Create remote action', function() {
     it('Should create remote action "sum" and return promise with answer', function() {
-        rpc.handle('sum', function (a, b) {
-            return Promise.resolve(a+b);
+        rpc.handle('square', function (a) {
+            if(isNaN(+a)) return Promise.reject(new Error('Argument is NaN'));
+            return Promise.resolve(a*a);
         })
     });
 });
 
 describe('call remote action', function() {
-    it('Call remote action "sum" with 2+3 and return 5 with callback', function() {
+    it('Call remote action "square" with 2 and expect 4 with callback', function() {
         return new Promise(function (resolve, reject) {
-            rpc.call('sum', 2, 3, function (err, result) {
+            rpc.call('square', 2, function (err, result) {
                 if(err) return reject(err);
-                assert.equal(result, 2+3);
+                assert.equal(result, 2*2);
                 resolve()
             })
         });
     });
-    it('Call remote action "sum" with 2+3 and return 5 with promise', function() {
+    it('Call remote action "square" with 2 and expect 4 with promise', function() {
         return new Promise( (resolve, reject) => {
-            rpc.promise('sum', 2, 3).then( function (result) {
-                assert.equal(result, 2+3);
+            rpc.promise('square', 2).then( function (result) {
+                assert.equal(result, 2*2);
                 resolve();
             })
                 .catch(reject)
+        })
+    });
+    it('Call remote action "square" with "string" and expect rejection', function() {
+        return new Promise( (resolve, reject) => {
+            rpc.promise('square', 'string')
+                .then(reject)
+                .catch(resolve)
         })
     });
 });
